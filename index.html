@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+    <h2>Gravação e Reprodução de Eventos</h2>
+    <textarea id="code-editor" style="width:100%;height:200px"></textarea>
+    <button onclick="startRecording()">Iniciar Gravação</button>
+    <button onclick="stopRecording()">Parar Gravação</button>
+    <button onclick="replay()">Reproduzir</button>
+
+    <!-- Adicionando o arquivo JavaScript -->
+    <!-- <script src="script.js"></script> -->
+    <script>
+        let events = [];
+        let isRecording = false;
+        let startTime;
+
+        function startRecording() {
+            events = []; // Limpa qualquer gravação anterior
+            isRecording = true;
+            startTime = Date.now();
+            console.log('Gravação iniciada');
+        }
+
+        function stopRecording() {
+            isRecording = false; 
+            console.log('Gravação parada');
+        }
+
+        document.querySelector('#code-editor').addEventListener('input', (e) => {
+            if (isRecording) {
+                const event = {
+                    type: 'input',
+                    timestamp: Date.now() - startTime,
+                    value: e.target.value,
+                };
+                events.push(event);
+            }
+        });
+
+        let currentIndex = 0;
+        function replay() {
+            if (currentIndex < events.length) {
+                const event = events[currentIndex];
+                document.querySelector('#code-editor').value = event.value;
+                currentIndex++;
+                setTimeout(replay, events[currentIndex]?.timestamp - event.timestamp);
+                console.log(event);
+            } else {
+                currentIndex = 0; // Reset index for next replay
+                console.log('Reprodução finalizada');
+            }
+        }
+
+    </script>
+</body>
+
+</html>
